@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Reply to Comment - YouTube Comment Responder{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h4 mb-0">Reply to Comment</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <span class="fw-bold">{{ comment.author_name }}</span> 
+                                <span class="badge bg-secondary ms-2">{{ comment.published_at.strftime('%Y-%m-%d') }}</span>
+                            </div>
+                            <a href="{{ url_for('history') }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Back to History
+                            </a>
+                        </div>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="mb-0">{{ comment.comment_text }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('reply_to_comment_route', comment_id=comment.id) }}">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.reply_text.label(class="form-label fw-bold") }}
+                            {{ form.reply_text(class="form-control", rows=5) }}
+                            {% for error in form.reply_text.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="button" id="generateReply" class="btn btn-outline-primary">
+                                <i class="fas fa-robot me-1"></i> Generate with Gemini
+                            </button>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Button to generate reply using Gemini
+    document.getElementById('generateReply').addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Generating...';
+        
+        // Get comment text
+        const commentText = "{{ comment.comment_text|safe|replace('"', '\\"')|replace('\n', ' ') }}";
+        
+        // Call API to generate reply
+        fetch('/api/generate_reply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ comment_text: commentText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('{{ form.reply_text.id }}').value = data.reply;
+            } else {
+                alert('Failed to generate reply: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while generating the reply.');
+        })
+        .finally(() => {
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-robot me-1"></i> Generate with Gemini';
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Google OAuth Setup{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h3 mb-0"><i class="fab fa-google me-2"></i>Google OAuth Setup Instructions</h1>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p class="mb-0"><i class="fas fa-info-circle me-2"></i>Follow these steps to fix the "redirect_uri_mismatch" error.</p>
+                    </div>
+
+                    <ol class="list-group list-group-numbered mb-4">
+                        <li class="list-group-item">
+                            <h5>Go to Google Cloud Console</h5>
+                            <p class="mb-0">Visit <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="text-decoration-none">Google Cloud Console Credentials</a></p>
+                        </li>
+
+                        <li class="list-group-item">
+                            <h5>Find Your OAuth Client</h5>
+                            <p class="mb-0">Look for the OAuth 2.0 Client ID you're using and click the edit (pencil) icon</p>
+                        </li>
+
+                        <li class="list-group-item">
+                            <h5>Add This Exact Redirect URI</h5>
+                            <div class="bg-light p-3 rounded">
+                                <code class="text-primary" id="redirect-uri">http://localhost:5000/google_login/callback</code>
+                                <button class="btn btn-sm btn-outline-primary mt-2" onclick="copyToClipboard()">
+                                    <i class="fas fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                            <div class="alert alert-warning mt-2 mb-0">
+                                <small><i class="fas fa-exclamation-triangle me-1"></i>Must match exactly - including http://, port number, and no trailing slash</small>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item">
+                            <h5>Save Changes</h5>
+                            <p class="mb-0">Click "Save" at the bottom of the page</p>
+                        </li>
+                    </ol>
+
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('google_auth.login') }}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Try Login Again
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyToClipboard() {
+    const redirectUri = document.getElementById('redirect-uri');
+    navigator.clipboard.writeText(redirectUri.textContent)
+        .then(() => {
+            const button = document.querySelector('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-success');
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-primary');
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Could not copy text: ', err);
+        });
+}
+</script>
+{% endblock %}

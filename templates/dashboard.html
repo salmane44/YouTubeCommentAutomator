@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - YouTube Comment Responder{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Dashboard</h1>
+            {% if current_user.oauth_user %}
+            <div class="badge bg-info text-white mb-3">
+                <i class="fab fa-google me-1"></i> Connected with Google
+            </div>
+            <div class="small text-muted">You can now manage your YouTube comments automatically</div>
+            {% endif %}
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addChannelModal">
+            <i class="fas fa-plus me-2"></i>Add YouTube Channel
+        </button>
+    </div>
+
+    <!-- Channels Section -->
+    <div class="row">
+        {% if channels %}
+            {% for channel in channels %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card channel-card h-100">
+                    <div class="card-header card-header-action">
+                        <h5 class="mb-0">{{ channel.channel_name }}</h5>
+                        {% if channel.is_verified %}
+                        <span class="badge bg-success verification-badge">Verified</span>
+                        {% else %}
+                        <span class="badge bg-warning verification-badge">Unverified</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2"><strong>Channel ID:</strong> {{ channel.channel_id }}</p>
+                        <p class="mb-3"><strong>Added:</strong> {{ channel.created_at.strftime('%Y-%m-%d') }}</p>
+
+                        {% if channel.is_verified %}
+                        <div class="mb-3">
+                            <label class="form-label">Date Range</label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                <input type="date" id="start_date_{{ channel.id }}" class="form-control">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                <input type="date" id="end_date_{{ channel.id }}" class="form-control">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-100 mb-2 process-comments-btn" data-channel-id="{{ channel.id }}">
+                            <i class="fas fa-sync me-2"></i>Process Comments
+                        </button>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Channel needs verification
+                        </div>
+                        <a href="{{ url_for('verify_channel', channel_id=channel.id) }}" class="btn btn-warning w-100 mb-2">
+                            <i class="fas fa-check-circle me-2"></i>Verify Channel
+                        </a>
+                        {% endif %}
+
+                        <!-- Remove Channel Button -->
+                        <form action="{{ url_for('remove_channel', channel_id=channel.id) }}" method="POST" class="mt-2"
+                              onsubmit="return confirm('Are you sure you want to remove this channel? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-trash-alt me-2"></i>Remove Channel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i>No Channels Added</h4>
+                <p>You haven't added any YouTube channels yet. Click the "Add YouTube Channel" button to get started.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Quick Stats Section -->
+    {% if channels %}
+    <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-0">Channels</h6>
+                            <h2 class="mb-0">{{ channels|length }}</h2>
+                        </div>
+                        <i class="fas fa-video fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-0">Verified</h6>
+                            <h2 class="mb-0">{{ channels|selectattr('is_verified', 'equalto', true)|list|length }}</h2>
+                        </div>
+                        <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-0">Pending</h6>
+                            <h2 class="mb-0">{{ channels|selectattr('is_verified', 'equalto', false)|list|length }}</h2>
+                        </div>
+                        <i class="fas fa-hourglass-half fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Channel Modal -->
+<div class="modal fade" id="addChannelModal" tabindex="-1" aria-labelledby="addChannelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addChannelModalLabel">Add YouTube Channel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="add-channel-form" method="POST" action="{{ url_for('add_channel') }}">
+                <div class="modal-body">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="channel_id" class="form-label">YouTube Channel ID</label>
+                        {{ form.channel_id(class="form-control", id="channel_id", placeholder="Enter your YouTube Channel ID") }}
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>You can find your Channel ID in your YouTube account settings or in the URL of your channel page.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

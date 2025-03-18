@@ -1,0 +1,93 @@
+/* Custom styles for YouTube Comment Responder */
+
+/* Selected comment styles */
+.selected-comment {
+    border: 2px solid var(--bs-primary);
+    box-shadow: 0 0 5px rgba(var(--bs-primary-rgb), 0.3);
+}
+
+/* Comment card hover effect */
+.comment-card {
+    transition: all 0.2s ease-in-out;
+}
+
+.comment-card {
+    background-color: rgba(255, 255, 255, 0.15);
+    margin-top: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.comment-card .card-body {
+    color: #ffffff;
+}
+
+.comment-card .text-muted {
+    color: #b0b5ba !important;
+}
+
+.comment-card .comment-text {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.reply-text {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000000 !important;
+}
+
+.reply-text p {
+    color: #000000 !important;
+}
+
+.comment-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Reply text styling */
+.reply-text {
+    border-left: 3px solid var(--bs-info);
+}
+
+/* Moderation panel styles */
+.moderation-panel {
+
+/* Landing page styles */
+.btn-lg {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.text-primary {
+    color: #7C4DFF !important;
+}
+
+.btn-primary {
+    background-color: #7C4DFF;
+    border-color: #7C4DFF;
+}
+
+.btn-primary:hover {
+    background-color: #6C3FEF;
+    border-color: #6C3FEF;
+}
+
+    transition: all 0.3s ease-in-out;
+    border-left: 3px solid var(--bs-primary);
+}
+
+/* Badge spacing */
+.gap-2 {
+    gap: 0.5rem;
+}

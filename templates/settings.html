@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings - YouTube Comment Responder{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Settings</h1>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="list-group shadow-sm">
+                <a href="#general-settings" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-cog me-2"></i>General Settings
+                </a>
+                <a href="#response-settings" class="list-group-item list-group-item-action">
+                    <i class="fas fa-comment-alt me-2"></i>Response Settings
+                </a>
+                <a href="#time-settings" class="list-group-item list-group-item-action">
+                    <i class="fas fa-clock me-2"></i>Time Settings
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">User Settings</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('settings') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div id="general-settings" class="settings-section">
+                            <h4 class="mb-3">General Settings</h4>
+                            <div class="form-check form-switch mb-3">
+                                {{ form.auto_reply_enabled(class="form-check-input", role="switch", id="auto_reply_enabled") }}
+                                <label class="form-check-label" for="auto_reply_enabled">
+                                    {{ form.auto_reply_enabled.label }}
+                                </label>
+                                <div class="form-text">When enabled, responses will be automatically posted to YouTube.</div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div id="response-settings" class="settings-section">
+                            <h4 class="mb-3">Response Settings</h4>
+                            <div class="mb-3">
+                                <label for="custom_prompt" class="form-label">{{ form.custom_prompt.label }}</label>
+                                {{ form.custom_prompt(class="form-control", id="custom_prompt", rows="4") }}
+                                <div class="form-text">
+                                    <p>Customize the prompt template used by Gemini Flash 1.5 to generate responses. Use {comment_text} as a placeholder for the comment's content.</p>
+                                    <p>Leave empty to use the default prompt template.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div id="time-settings" class="settings-section">
+                            <h4 class="mb-3">Time Settings</h4>
+                            <div class="mb-3">
+                                <label for="reply_delay" class="form-label">{{ form.reply_delay.label }}</label>
+                                {{ form.reply_delay(class="form-control", id="reply_delay", type="number", min="0", max="3600") }}
+                                <div class="form-text">Add a delay (in seconds) before posting each comment response. (0-3600 seconds)</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="reply_time_window" class="form-label">{{ form.reply_time_window.label }}</label>
+                                {{ form.reply_time_window(class="form-control", id="reply_time_window", type="number", min="1", max="30") }}
+                                <div class="form-text">Default time window (in days) for processing comments. (1-30 days)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle settings navigation
+        const navLinks = document.querySelectorAll('.list-group-item');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                navLinks.forEach(item => item.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Scroll to section
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({behavior: 'smooth'});
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

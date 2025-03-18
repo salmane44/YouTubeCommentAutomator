@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - YouTube Comment Responder{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-4">Manage YouTube Comments Intelligently</h1>
+                <p class="lead mb-4">Automate your YouTube comment responses with AI-powered intelligence. Never miss an opportunity to connect with your audience.</p>
+                <div class="text-center text-lg-start">
+                    <a href="{{ url_for('google_auth.login') }}" class="btn-google-login">
+                        <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20">
+                        Continue with Google
+                    </a>
+                    <p class="text-light mt-2"><small>Sign in with your YouTube channel email</small></p>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center">
+                <img src="{{ url_for('static', filename='images/hero-illustration.svg') }}" alt="YouTube Comment Management" class="img-fluid" style="max-width: 400px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title h5">AI-Powered Responses</h3>
+                    <p class="card-text">Generate intelligent, contextual responses to your YouTube comments automatically using Gemini Flash 1.5.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title h5">Save Time</h3>
+                    <p class="card-text">Automate your comment management and focus on creating great content for your channel.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title h5">Boost Engagement</h3>
+                    <p class="card-text">Increase viewer engagement and build a stronger community with timely responses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="container py-5">
+    <h2 class="text-center mb-5">How It Works</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="text-center">
+                <div class="feature-icon">
+                    <i class="fab fa-google"></i>
+                </div>
+                <h4 class="h5">1. Connect Account</h4>
+                <p class="text-muted">Sign in securely with your Google account</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <div class="feature-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <h4 class="h5">2. Add Channel</h4>
+                <p class="text-muted">Link your YouTube channel</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h4 class="h5">3. Configure</h4>
+                <p class="text-muted">Customize your response settings</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h4 class="h5">4. Auto-Respond</h4>
+                <p class="text-muted">Let AI handle your comments</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
